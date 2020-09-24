@@ -3,7 +3,7 @@ import { FiLock } from "react-icons/fi";
 import { Form } from "@unform/web";
 import { FormHandles } from "@unform/core";
 import * as Yup from "yup";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 
 import { useToast } from "../../hooks/toast";
 import getValidationErrors from "../../utils/getValidationErrors";
@@ -16,10 +16,6 @@ import Button from "../../components/Button";
 import { Container, Content, AnimationContainer, Background } from "./styles";
 import api from "../../services/api";
 
-interface RouteParams {
-	token: string;
-}
-
 interface ResetPasswordFormData {
 	password: string;
 	password_confirmation: string;
@@ -30,7 +26,7 @@ const ResetPassword: React.FC = () => {
 
 	const { addToast } = useToast();
 	const history = useHistory();
-	const { token } = useParams<RouteParams>();
+	const location = useLocation();
 
 	const handleSubmit = useCallback(
 		async (data: ResetPasswordFormData) => {
@@ -50,6 +46,7 @@ const ResetPassword: React.FC = () => {
 				});
 
 				const { password, password_confirmation } = data;
+				const token = location.search.slice(7);
 
 				if (!token) {
 					throw new Error();
@@ -78,7 +75,7 @@ const ResetPassword: React.FC = () => {
 				});
 			}
 		},
-		[addToast, history, token]
+		[addToast, history, location.search]
 	);
 
 	return (

@@ -21,6 +21,7 @@ import {
 import logoImg from "../../assets/logo.svg";
 import { useAuth } from "../../hooks/auth";
 import api from "../../services/api";
+import { Link } from "react-router-dom";
 
 interface MonthAvailabilityItem {
 	day: number;
@@ -117,15 +118,27 @@ const Dashboard: React.FC = () => {
 	}, [selectedDate]);
 
 	const morningAppointments = useMemo(() => {
-		return appointments.filter(appointment => {
-			return parseISO(appointment.date).getHours() < 12;
-		});
+		return appointments
+			.sort(
+				(a, b) =>
+					Number(a.formattedHour.slice(0, 2)) -
+					Number(b.formattedHour.slice(0, 2))
+			)
+			.filter(appointment => {
+				return parseISO(appointment.date).getHours() < 12;
+			});
 	}, [appointments]);
 
 	const afternoonAppointments = useMemo(() => {
-		return appointments.filter(appointment => {
-			return parseISO(appointment.date).getHours() >= 12;
-		});
+		return appointments
+			.sort(
+				(a, b) =>
+					Number(a.formattedHour.slice(0, 2)) -
+					Number(b.formattedHour.slice(0, 2))
+			)
+			.filter(appointment => {
+				return parseISO(appointment.date).getHours() >= 12;
+			});
 	}, [appointments]);
 
 	const nextAppointment = useMemo(() => {
@@ -144,7 +157,9 @@ const Dashboard: React.FC = () => {
 						<img src={user.avatar_url} alt={user.name} />
 						<div>
 							<span>Bem-vindo,</span>
-							<strong>{user.name}</strong>
+							<Link to="/profile">
+								<strong>{user.name}</strong>
+							</Link>
 						</div>
 					</Profile>
 
